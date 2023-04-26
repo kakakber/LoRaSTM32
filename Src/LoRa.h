@@ -101,6 +101,27 @@
 
 /*public functions*/
 
+
+/**
+ * @brief Initializes the LoRa module.
+ *
+ * This function initializes the LoRa module and sets default parameters
+ *
+ * @param hspi A pointer to the SPI_HandleTypeDef struct that contains the configuration information for the SPI peripheral.
+ * @param NSS_GPIOx A pointer to the GPIO_TypeDef struct that represents the GPIO port for the chip select (NSS) pin.
+ * @param NSS_GPIO_Pin The GPIO pin number for the chip select (NSS) pin.
+ * @param RESET_GPIOx A pointer to the GPIO_TypeDef struct that represents the GPIO port for the reset pin.
+ * @param RESET_GPIO_Pin The GPIO pin number for the reset pin.
+ * @param DIO0_GPIOx A pointer to the GPIO_TypeDef struct that represents the GPIO port for the DIO0 pin.
+ * @param DIO0_GPIO_Pin The GPIO pin number for the DIO0 pin.
+ *
+ * @return An integer value indicating the success or failure of the initialization process. A value of 0 indicates success, while any other value indicates an error.
+ */
+int loRaInit(SPI_HandleTypeDef *hspi, GPIO_TypeDef *NSS_GPIOx, uint16_t NSS_GPIO_Pin,
+             GPIO_TypeDef *RESET_GPIOx, uint16_t RESET_GPIO_Pin,
+             GPIO_TypeDef *DIO0_GPIOx, uint16_t DIO0_GPIO_Pin);
+
+
 int loRaInit(SPI_HandleTypeDef*, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t);
 void loRaSetTxPower(int, int);
 void loRaSetFrequency(uint8_t);

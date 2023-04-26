@@ -127,7 +127,7 @@ int loRaSendPacket(int explicitHeader, const uint8_t *buffer, size_t size){
 		 *to reduce transmission time by invoking implicit header mode. In this mode the header is removed from the packet.
 		 *to In this case the payload length, error coding rate and presence of the payload CRC must be manually configured on both sides of the radio link.
 		 */
-		loRaWriteRegister(REG_MODEM_CONFIG_1, readRegister(REG_MODEM_CONFIG_1) | 0x01);
+		loRaWriteRegister(REG_MODEM_CONFIG_1, loRaReadRegister(REG_MODEM_CONFIG_1) | 0x01);
 	}
 	/*The actual location to be read from, or written to, over the SPI interface is defined by the address pointer FifoAddrPtr.
 	 * Before any read or write operation it is hence necessary to initialise this pointer to the corresponding base value.
