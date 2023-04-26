@@ -1,7 +1,7 @@
 # LoRaSTM32 (not finished)
 ## Usage
 Setup spi on cubeMX:
-![alt text](https://github.com/kakakber/LoRaSTM32/Imgs/SPImax.png)
+![Alt text](Imgs/SPImax.png "Title")
 After copying the folder inside your preferred direcory, import the header file:
 
 ```
