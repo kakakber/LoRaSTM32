@@ -1,5 +1,6 @@
 # LoRaSTM32 (not finished)
 ## Usage
+
 Setup spi on cubeMX, maximum rate about 20MBps:
 ![Alt text](Imgs/SPImax.png "Title")
 ---
