@@ -15,14 +15,14 @@ After copying the library folder inside your preferred directory, import the hea
 Initialize the loRa module before start of operations, the method receives all the spi pin and ports.
 Example of usage:
 ```
-  if (loRaInit(&hspi3, SPI_3_CS0_GPIO_Port, SPI_3_CS0_Pin, DIO0_INT_GPIO_Port, DIO0_INT_Pin, LoRa_RST_GPIO_Port, LoRa_RST_Pin)){
-	  //Initialization was successful, add custom parameters
-  }else{
-	  //Failed init, example of response (loops while lora not initializing)
-	  do{
-		  HAL_Delay(1000);
-	  }while(!loRaInit(&hspi3, SPI_3_CS0_GPIO_Port, SPI_3_CS0_Pin, DIO0_INT_GPIO_Port, DIO0_INT_Pin, LoRa_RST_GPIO_Port, LoRa_RST_Pin));
-  }
+if (loRaInit(&hspi3, SPI_3_CS0_GPIO_Port, SPI_3_CS0_Pin, DIO0_INT_GPIO_Port, DIO0_INT_Pin, LoRa_RST_GPIO_Port, LoRa_RST_Pin)){
+	//Initialization was successful, add custom parameters
+}else{
+	//Failed init, example of response (loops while lora not initializing)
+	do{
+		HAL_Delay(1000);
+	}while(!loRaInit(&hspi3, SPI_3_CS0_GPIO_Port, SPI_3_CS0_Pin, DIO0_INT_GPIO_Port, DIO0_INT_Pin, LoRa_RST_GPIO_Port, LoRa_RST_Pin));
+}
 ```
 
 ---
