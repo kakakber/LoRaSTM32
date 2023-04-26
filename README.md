@@ -2,6 +2,7 @@
 ## Usage
 
 Setup spi on cubeMX, maximum rate about 20MBps:
+
 ![Alt text](Imgs/SPImax.png "Title")
 ---
 After copying the library folder inside your preferred directory, import the header file:
