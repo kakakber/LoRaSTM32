@@ -1,8 +1,9 @@
 # LoRaSTM32 (not finished)
 ## Usage
-Setup spi on cubeMX:
+Setup spi on cubeMX, maximum rate about 20MBps:
 ![Alt text](Imgs/SPImax.png "Title")
-After copying the folder inside your preferred direcory, import the header file:
+---
+After copying the library folder inside your preferred directory, import the header file:
 
 ```
 #include "[Path]/LoRa.h"
