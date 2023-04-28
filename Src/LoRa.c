@@ -115,8 +115,13 @@ void loRaDIO0InterruptHandler(void (*TXcallback)(void), void (*RXcallback)(void)
  */
 int loRaSendPacket(int explicitHeader, const uint8_t *buffer, size_t size){
 	//first check if not already transmitting
+
 	if ((loRaReadRegister(REG_OP_MODE) & MODE_TX) == MODE_TX) {
 	    return 0;//cannot send packet, already sending!
+	}
+	if (loRaReadRegister(REG_IRQ_FLAGS) & IRQ_TX_DONE_MASK) {
+	    // clear IRQ's
+	    loRaWriteRegister(REG_IRQ_FLAGS, IRQ_TX_DONE_MASK);
 	}
 	loRaIdle();
 	if(explicitHeader){
@@ -160,6 +165,30 @@ int loRaSendPacket(int explicitHeader, const uint8_t *buffer, size_t size){
 	 return 1;
 
 }
+
+/*
+ * uint8_t irqFlags = loRaReadRegister(REG_IRQ_FLAGS);
+
+	//clear irq flags, writing one on the 1's clears the irq
+	loRaWriteRegister(REG_IRQ_FLAGS, irqFlags);
+ */
+
+int loRaSendPacketSYNC(int explicitHeader, const uint8_t *buffer, size_t size){
+	 loRaSendPacket(explicitHeader, buffer, size);
+	 // wait for TX done
+	 while ((loRaReadRegister(REG_IRQ_FLAGS) & IRQ_TX_DONE_MASK) != IRQ_TX_DONE_MASK);
+	 // clear IRQ's
+	 loRaWriteRegister(REG_IRQ_FLAGS, IRQ_TX_DONE_MASK);
+	 return 1;
+
+}
+
+int loRaSendPacketSynchronous(int explicitHeader, const uint8_t *buffer, size_t size){
+
+	 return 1;
+
+}
+
 
 
 void loRaFullyTransmitMode(){
@@ -253,7 +282,7 @@ int loRaInit(SPI_HandleTypeDef* hspi_in, GPIO_TypeDef* spi_cs_port, uint16_t spi
 	}
 	//MODES: 000 SLEEP 001 STDBY 010 Frequency synthesis TX (FSTX) 011 Transmit (TX) 100 Frequency synthesis RX (FSRX) 101 Receive continuous (RXCONTINUOUS) 110receive single (RXSINGLE) 111Channel activity detection (CAD)
 	loRaSleep();
-	loRaSetFrequency(3);
+	loRaSetFrequency(0);
 
 	//LoRa fifo base addr
 	//loRaWriteRegister(REG_FIFO_TX_BASE_ADDR, 0);
@@ -345,15 +374,16 @@ void loRaSetLDOFlag(){
 	  long symbolDuration = 1000 / ( loRaGetSignalBandwidth() / (1L << loRaGetSpreadingFactor()) ) ;
 
 	  // Section 4.1.1.6
-	  int ldoOn = symbolDuration > 16;
+
 	  uint8_t config3 = loRaReadRegister(REG_MODEM_CONFIG_3);
-	  if(ldoOn == TRUE){
+	  if(symbolDuration > 16){
 		  config3 |= 0x08; //set LowDataRateOptimize to true
 	  }else{
 		  config3 &= 0xF7; //set LowDataRateOptimize to false
 	  }
 	  loRaWriteRegister(REG_MODEM_CONFIG_3, config3);
 }
+
 
 void loRaSetSignalBandwidth(long sbw){
   int bw;
@@ -383,6 +413,7 @@ void loRaSetSignalBandwidth(long sbw){
   loRaWriteRegister(REG_MODEM_CONFIG_1, (loRaReadRegister(REG_MODEM_CONFIG_1) & 0x0f) | (bw << 4));
   loRaSetLDOFlag();
 }
+
 
 long loRaGetSignalBandwidth(){
 
