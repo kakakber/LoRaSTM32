@@ -52,6 +52,7 @@ void loRaWriteRegister(uint8_t reg, uint8_t data){
 	uint8_t inpData[2];
 	inpData[0] = reg | 0x80, //sets first bit to 0
 	inpData[1] = data;
+
 	HAL_GPIO_WritePin(LORA_SPI_CS_Port, LORA_SPI_CS_Pin, GPIO_PIN_RESET);
 
 	//read the register in pooling mode and not interrupting
@@ -166,6 +167,23 @@ int loRaSendPacket(int explicitHeader, const uint8_t *buffer, size_t size){
 
 }
 
+void loRaClearIRQ(){
+	uint8_t irqFlags = loRaReadRegister(REG_IRQ_FLAGS);
+
+	//clear irq flags, writing one on the 1's clears the irq
+	loRaWriteRegister(REG_IRQ_FLAGS, irqFlags);
+}
+
+
+int loRaIsTrasmitting(){
+	if((loRaReadRegister(REG_IRQ_FLAGS) & IRQ_TX_DONE_MASK) != IRQ_TX_DONE_MASK){
+		//trasmitting
+		return 1;
+	}else{
+		return 0;
+	}
+}
+
 /*
  * uint8_t irqFlags = loRaReadRegister(REG_IRQ_FLAGS);
 
@@ -181,6 +199,10 @@ int loRaSendPacketSYNC(int explicitHeader, const uint8_t *buffer, size_t size){
 	 loRaWriteRegister(REG_IRQ_FLAGS, IRQ_TX_DONE_MASK);
 	 return 1;
 
+}
+
+void loRaClearIRQReceive(){
+	loRaWriteRegister(REG_IRQ_FLAGS, IRQ_TX_DONE_MASK);
 }
 
 int loRaSendPacketSynchronous(int explicitHeader, const uint8_t *buffer, size_t size){
@@ -216,6 +238,7 @@ uint8_t loRaReadRegister(uint8_t reg){
 	inpData[0] = reg & 0x7F; //sets first bit to 0 and the rest as requested
 	inpData[1] = 0x00; //dummy data when receiving
 	uint8_t rxData[2];
+
 
 	//lora CS to low to begin
 	HAL_GPIO_WritePin(LORA_SPI_CS_Port, LORA_SPI_CS_Pin, GPIO_PIN_RESET);
